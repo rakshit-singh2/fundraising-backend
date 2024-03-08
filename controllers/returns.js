@@ -173,7 +173,7 @@ const investorsClosedProject = async (req, res) => {
 const investorsReturns = async (req, res) => {
     try {
         const projectId = req.params.projectId;
-
+        console.log("projectId",projectId)
         // Aggregate pipeline to sum up the invested amount for each investor on the specified project
         const result = await Investment.aggregate([
             { $match: { projectID: projectId } }, // Filter by project ID
@@ -184,7 +184,7 @@ const investorsReturns = async (req, res) => {
                 }
             }
         ]);
-
+        console.log("result",result)
         if (!result || result.length === 0) {
             return res.status(404).json({
                 statusCode: 404,

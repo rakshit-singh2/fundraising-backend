@@ -93,22 +93,24 @@ const { ethers } = require("ethers");
  */
 const createProject = async (req, res) => {
     try {
-        if (!req.body.recieverAddress || req.body.recieverAddress.length != 42) {
-            return res.status(404).json({
-                statusCode: 404,
+        if (!req.body.recieverAddress || req.body.recieverAddress.length !== 42) {
+            return res.status(400).json({
+                statusCode: 400,
                 responseMessage: "Invalid Address",
             });
         }
+        
         const existingProject = await Project.find({
             $and: [{ name: req.body.name }, { recieverAddress: req.body.recieverAddress }],
         });
-        console.log(existingProject)
-        if (existingProject) {
+
+        if (existingProject.length > 0) {
             return res.status(409).json({
                 statusCode: 409,
                 responseMessage: "Project already exists",
             });
         }
+
         const wallet = ethers.Wallet.createRandom();
         const newProject = new Project({
             name: req.body.name,
@@ -130,7 +132,7 @@ const createProject = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({
-            statusCode: 505,
+            statusCode: 500,
             responseMessage: "Something went wrong",
             error: error,
         });
