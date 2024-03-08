@@ -30,7 +30,7 @@ router.get("/investments/getAllInvestment", getAllInvestment);
 /************************************************  Returns  ************************************************/
 const { investorsClosedProject, investorsReturns } = require('../controllers/returns');
 router.get("/returns/investorsClosedProject/:projectId", investorsClosedProject);
-router.get("/returns/investorsReturns/:projectId", investorsClosedProject);
+router.get("/returns/investorsReturns/:projectId", investorsReturns);
 
 
 /************************************************  Router Export  ************************************************/
