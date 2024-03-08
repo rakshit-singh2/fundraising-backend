@@ -466,6 +466,10 @@ const assignTokenToProject = async (req, res) => {
 
         existingProject.tokenAddress = req.body.tokenAddress;
         await existingProject.save();
+        return res.status(200).json({
+            statusCode: 200,
+            projects: existingProject,
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -548,6 +552,10 @@ const withdraw = async (req, res) => {
 
         existingProject.totalRaised = 0;
         await existingProject.save();
+        return res.status(200).json({
+            statusCode: 200,
+            projects: existingProject,
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
