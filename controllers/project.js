@@ -547,7 +547,7 @@ const assignTokenToProject = async (req, res) => {
 const withdraw = async (req, res) => {
     try{
         const existingProject = await Project.findOne({
-            _id: req.body.projectID,
+            _id: req.params.projectID,
             status: 'OPEN'
         });
 
