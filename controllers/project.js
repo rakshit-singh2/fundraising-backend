@@ -292,6 +292,52 @@ const getProjectByAddress = async (req, res) => {
 };
 
 
+// Define the route for getting a project by ID
+/**
+ * @swagger
+ * /api/projects/{id}:
+ *   get:
+ *     summary: Get a project by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Project ID
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *       '404':
+ *         description: Project not found
+ *       '500':
+ *         description: Internal server error
+ */
+const getProjectById = async (req, res) => {
+    try {
+        const projectId = req.params.id; // Assuming the route parameter is named "id"
+        const project = await Project.findById(projectId);
+        if (!project) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "Project not found",
+            });
+        }
+        return res.status(200).json({
+            statusCode: 200,
+            project: project,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            statusCode: 500,
+            responseMessage: "Something went wrong",
+            error: error,
+        });
+    }
+};
+
+
 /**
  * @swagger
  * /api/projects/getAllProjects:
@@ -347,5 +393,6 @@ module.exports = {
     createProject,
     getProjectByName,
     getProjectByAddress,
-    getAllProjects
+    getAllProjects,
+    getProjectById
 };
