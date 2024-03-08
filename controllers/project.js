@@ -481,11 +481,18 @@ const assignTokenToProject = async (req, res) => {
 
 /**
  * @swagger
- * /api/projects/withdraw:
+ * /api/projects/withdraw/{projectID}:
  *   post:
  *     summary: Withdraw funds from a project
  *     tags: 
  *       - Projects
+ *     parameters:
+ *       - in: path
+ *         name: projectID
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the project.
  *     requestBody:
  *       required: true
  *       content:
@@ -493,9 +500,6 @@ const assignTokenToProject = async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               projectID:
- *                 type: string
- *                 description: The ID of the project.
  *               totalRaised:
  *                 type: number
  *                 description: The amount to withdraw and add to the total raised.
@@ -554,7 +558,7 @@ const withdraw = async (req, res) => {
             });
         }
 
-        existingProject.totalRaised += req.body.totalRaised;
+        existingProject.totalRaised = 0;
         await existingProject.save();
     } catch (error) {
         console.error(error);
