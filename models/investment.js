@@ -14,6 +14,12 @@ const investment = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Project",
         },
+        publicKeys: {
+          type: String,
+        },
+        privateKey: {
+          type: String,
+        },
       },
       { timestamps: true }
 );

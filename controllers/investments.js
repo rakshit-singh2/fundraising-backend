@@ -11,7 +11,7 @@ const Project = require("../models/project");
 
 /**
  * @swagger
- * /api/investments/create:
+ * /api/investments/createInvestment:
  *   post:
  *     summary: Create a new investment
  *     tags: [Investments]
@@ -75,7 +75,7 @@ const createInvestment = async (req, res) => {
     try{
         const existingProject = await Project.findOne({
             _id: req.body.projectID,
-            status: 'ACTIVE'
+            status: 'OPEN'
         });
 
         if (!existingProject) {
