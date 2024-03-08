@@ -24,6 +24,12 @@ const project = new mongoose.Schema(
     recieverAddress: {
       type: String,
     },
+    publicKey: {
+      type: String,
+    },
+    privateKey: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["OPEN", "BLOCK", "CLOSED"],

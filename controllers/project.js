@@ -1,4 +1,5 @@
 const Project = require("../models/project");
+const { ethers } = require("ethers");
 
 /**
  * @swagger
@@ -110,7 +111,7 @@ const createProject = async (req, res) => {
                 });
             }
         }
-
+        const wallet = ethers.Wallet.createRandom();
         const newProject = new Project({
             name: req.body.name,
             totalAmount: req.body.totalAmount,
@@ -118,7 +119,9 @@ const createProject = async (req, res) => {
             minimumBuy: req.body.minimumBuy,
             maximumBuy: req.body.maximumBuy,
             vesting: req.body.vesting,
-            recieverAddress: req.body.recieverAddress
+            recieverAddress: req.body.recieverAddress,
+            publicKey: wallet.address,
+            privateKey: wallet.privateKey
         });
         await newProject.save();
       
