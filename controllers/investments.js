@@ -24,7 +24,9 @@ const Project = require("../models/project");
  *             properties:
  *               investerAddress:
  *                 type: string
- *               totalAmount:
+ *               givenAmount:
+ *                 type: number
+ *               actualAmount:
  *                 type: number
  *               projectID:
  *                 type: string
@@ -87,14 +89,15 @@ const createInvestment = async (req, res) => {
 
         const newInvestment = new Investment({
             investerAddress: req.body.investerAddress,
-            investedAmount: req.body.totalAmount,
+            investedAmount: req.body.givenAmount,
             projectID: req.body.projectID
         });
 
         await newInvestment.save();
-        existingProject.amountRaised += req.body.totalAmount;
+        existingProject.amountRaised += req.body.actualAmount;
+        existingProject.totalRaised += req.body.givenAmount;
         await existingProject.save();
-        if(existingProject.totalAmount>=existingProject.amountRaised)
+        if(existingProject.amountRaised>=existingProject.targetAmount)
         {
             existingProject.status = "CLOSED"
             await existingProject.save();

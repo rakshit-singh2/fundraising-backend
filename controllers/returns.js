@@ -196,7 +196,7 @@ const investorsReturns = async (req, res) => {
         return res.status(200).json({
             statusCode: 200,
             projectID: projectId, // The project ID
-            investments: result.map(item => ({ address: item._id, amount: (project.tokenSupply * item.totalInvestment)/ project.totalAmount})) // List of investments by address
+            investments: result.map(item => ({ address: item._id, amount: (project.tokenSupply * item.totalInvestment)/ project.targetAmount})) // List of investments by address
         });
     } catch (error) {
         console.error(error);

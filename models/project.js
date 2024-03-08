@@ -6,7 +6,7 @@ const project = new mongoose.Schema(
     name: {
       type: String,
     },
-    totalAmount: {
+    targetAmount: {
       type: Number,
     },
     tokenSupply: {
@@ -22,6 +22,10 @@ const project = new mongoose.Schema(
       type: Number,
     },
     amountRaised: {
+      type: Number,
+      default: 0
+    },
+    totalRaised:{
       type: Number,
       default: 0
     },

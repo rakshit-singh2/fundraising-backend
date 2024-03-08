@@ -23,7 +23,7 @@ const { ethers } = require("ethers");
  *             properties:
  *               name:
  *                 type: string
- *               totalAmount:
+ *               targetAmount:
  *                 type: number
  *               tokenSupply:
  *                 type: number
@@ -114,7 +114,7 @@ const createProject = async (req, res) => {
         const wallet = ethers.Wallet.createRandom();
         const newProject = new Project({
             name: req.body.name,
-            totalAmount: req.body.totalAmount,
+            targetAmount: req.body.targetAmount,
             tokenSupply: req.body.tokenSupply,
             minimumBuy: req.body.minimumBuy,
             maximumBuy: req.body.maximumBuy,
