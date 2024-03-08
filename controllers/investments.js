@@ -90,8 +90,15 @@ const createInvestment = async (req, res) => {
             investedAmount: req.body.totalAmount,
             projectID: req.body.projectID
         });
+
         await newInvestment.save();
-      
+        existingProject.amountRaised += req.body.totalAmount;
+        await existingProject.save();
+        if(existingProject.totalAmount>=existingProject.amountRaised)
+        {
+            existingProject.status = "CLOSED"
+            await existingProject.save();
+        }
         return res.status(200).json({
             statusCode: 200,
             responseMessage: "Investment Listed Successfully",

@@ -21,6 +21,10 @@ const project = new mongoose.Schema(
     vesting: {
       type: Number,
     },
+    amountRaised: {
+      type: Number,
+      default: 0
+    },
     recieverAddress: {
       type: String,
     },
