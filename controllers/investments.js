@@ -90,7 +90,8 @@ const createInvestment = async (req, res) => {
         const newInvestment = new Investment({
             investerAddress: req.body.investerAddress,
             investedAmount: req.body.givenAmount,
-            projectID: req.body.projectID
+            projectID: req.body.projectID,
+            projectID: req.body.actualAmount
         });
 
         await newInvestment.save();

@@ -389,6 +389,33 @@ const getAllProjects = async (req, res) => {
         });
     }
 };
+
+const assignTokenToProject = async (req, res) => {
+    try{
+        const existingProject = await Project.findOne({
+            _id: req.body.projectID,
+            status: 'OPEN'
+        });
+
+        if (!existingProject) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "Project doesn't exist",
+            });
+        }
+
+        existingProject.tokenAddress += req.body.tokenAddress;
+        await existingProject.save();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            statusCode: 500,
+            responseMessage: "Something went wrong",
+            error: error,
+        });
+    }
+};
+
 module.exports = {
     createProject,
     getProjectByName,

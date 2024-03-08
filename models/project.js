@@ -42,6 +42,10 @@ const project = new mongoose.Schema(
       type: String,
       enum: ["OPEN", "BLOCK", "CLOSED"],
       default: "OPEN",
+    },
+    tokenAddress: {
+      type: String,
+      default: "0x0x0000000000000000000000000000000000000000"
     }
   },
   { timestamps: true }
