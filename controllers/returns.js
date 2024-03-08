@@ -6,7 +6,7 @@ const Investment = require("../models/investment");
  * /api/returns/investorsClosedProject/{projectId}:
  *   get:
  *     summary: Get total investments by project ID
- *     tags: [Investments]
+ *     tags: [Returns]
  *     parameters:
  *       - in: path
  *         name: projectId
@@ -109,7 +109,7 @@ const investorsClosedProject = async (req, res) => {
  * /api/returns/investorsReturns/{projectId}:
  *   get:
  *     summary: Get total investments by project ID
- *     tags: [Investments]
+ *     tags: [Returns]
  *     parameters:
  *       - in: path
  *         name: projectId

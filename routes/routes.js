@@ -9,12 +9,14 @@ router.get("/test", test);
 
 
 /************************************************  Project  ************************************************/
-const { createProject, getProjectByName, getProjectByAddress, getAllProjects, getProjectById } = require('../controllers/project');
+const { createProject, getProjectByName, getProjectByAddress, getAllProjects, getProjectById, assignTokenToProject, withdraw } = require('../controllers/project');
 router.post("/projects/createProject", createProject);
 router.get("/projects/getProjectByName/:name", getProjectByName);
 router.get("/projects/getProjectByAddress/:address", getProjectByAddress);
 router.get('/projects/getProjectById/:id', getProjectById);
 router.get("/projects/getAllProjects", getAllProjects);
+router.get('/projects/assignTokenToProject', assignTokenToProject);
+router.get("/projects/withdraw", withdraw);
 
 
 /************************************************  Investment  ************************************************/

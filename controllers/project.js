@@ -390,6 +390,68 @@ const getAllProjects = async (req, res) => {
     }
 };
 
+
+/**
+ * @swagger
+ * /api/projects/assignTokenToProject:
+ *   post:
+ *     summary: Assign token to a project
+ *     tags: 
+ *       - Projects
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               projectID:
+ *                 type: string
+ *                 description: The ID of the project.
+ *               tokenAddress:
+ *                 type: string
+ *                 description: The address of the token to assign.
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 200
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Success
+ *       '404':
+ *         description: Project not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 404
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Project doesn't exist
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 500
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Something went wrong
+ */
 const assignTokenToProject = async (req, res) => {
     try{
         const existingProject = await Project.findOne({
@@ -416,10 +478,99 @@ const assignTokenToProject = async (req, res) => {
     }
 };
 
+
+/**
+ * @swagger
+ * /api/projects/withdraw:
+ *   post:
+ *     summary: Withdraw funds from a project
+ *     tags: 
+ *       - Projects
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               projectID:
+ *                 type: string
+ *                 description: The ID of the project.
+ *               totalRaised:
+ *                 type: number
+ *                 description: The amount to withdraw and add to the total raised.
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 200
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Success
+ *       '404':
+ *         description: Project not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 404
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Project doesn't exist
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 500
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Something went wrong
+ */
+const withdraw = async (req, res) => {
+    try{
+        const existingProject = await Project.findOne({
+            _id: req.body.projectID,
+            status: 'OPEN'
+        });
+
+        if (!existingProject) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "Project doesn't exist",
+            });
+        }
+
+        existingProject.totalRaised += req.body.totalRaised;
+        await existingProject.save();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            statusCode: 500,
+            responseMessage: "Something went wrong",
+            error: error,
+        });
+    }
+};
 module.exports = {
     createProject,
     getProjectByName,
     getProjectByAddress,
     getAllProjects,
-    getProjectById
+    getProjectById,
+    assignTokenToProject,
+    withdraw,
 };
