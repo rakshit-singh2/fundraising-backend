@@ -13,7 +13,7 @@ const { createProject, getProjectByName, getProjectByAddress, getAllProjects, ge
 router.post("/projects/createProject", createProject);
 router.get("/projects/getProjectByName/:name", getProjectByName);
 router.get("/projects/getProjectByAddress/:address", getProjectByAddress);
-router.get('/projects/getProjectById:id', getProjectById);
+router.get('/projects/getProjectById/:id', getProjectById);
 router.get("/projects/getAllProjects", getAllProjects);
 
 
