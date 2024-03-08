@@ -491,16 +491,6 @@ const assignTokenToProject = async (req, res) => {
  *         schema:
  *           type: string
  *         description: The ID of the project.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               totalRaised:
- *                 type: number
- *                 description: The amount to withdraw and add to the total raised.
  *     responses:
  *       '200':
  *         description: Successful operation
