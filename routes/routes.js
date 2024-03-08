@@ -16,7 +16,7 @@ router.get("/projects/getProjectByAddress/:address", getProjectByAddress);
 router.get('/projects/getProjectById/:id', getProjectById);
 router.get("/projects/getAllProjects", getAllProjects);
 router.post('/projects/assignTokenToProject', assignTokenToProject);
-router.post("/projects/withdraw/:projectID", withdraw);
+router.post('/projects/withdraw/:projectID', withdraw);
 
 
 /************************************************  Investment  ************************************************/

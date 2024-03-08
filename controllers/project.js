@@ -99,17 +99,15 @@ const createProject = async (req, res) => {
                 responseMessage: "Invalid Address",
             });
         }
-        const existingProject = await Project.findOne({
-            $or: [{ name: req.body.name }, { recieverAddress: req.body.recieverAddress }],
+        const existingProject = await Project.find({
+            $and: [{ name: req.body.name }, { recieverAddress: req.body.recieverAddress }],
         });
-
+        console.log(existingProject)
         if (existingProject) {
-            if (existingProject.name == req.body.name ) {
-                return res.status(409).json({
-                    statusCode: 409,
-                    responseMessage: "Project already exists",
-                });
-            }
+            return res.status(409).json({
+                statusCode: 409,
+                responseMessage: "Project already exists",
+            });
         }
         const wallet = ethers.Wallet.createRandom();
         const newProject = new Project({
@@ -466,7 +464,7 @@ const assignTokenToProject = async (req, res) => {
             });
         }
 
-        existingProject.tokenAddress += req.body.tokenAddress;
+        existingProject.tokenAddress = req.body.tokenAddress;
         await existingProject.save();
     } catch (error) {
         console.error(error);
