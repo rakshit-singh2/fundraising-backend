@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require('swagger-jsdoc');
 require("dotenv").config();
@@ -8,6 +9,14 @@ const routes = require('./routes/routes.js');
 
 const app = express();
 app.use(bodyParser.json());
+
+app.use(
+    cors({
+        origin: true,
+        credentials: true,
+    })
+);
+
 
 
 // Connect to MongoDB
