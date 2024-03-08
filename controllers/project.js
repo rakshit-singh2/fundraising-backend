@@ -292,12 +292,12 @@ const getProjectByAddress = async (req, res) => {
 };
 
 
-// Define the route for getting a project by ID
 /**
  * @swagger
- * /api/projects/{id}:
+ * /api/projects/getProjectById/{id}:
  *   get:
  *     summary: Get a project by ID
+ *     tags: [Projects]
  *     parameters:
  *       - in: path
  *         name: id
