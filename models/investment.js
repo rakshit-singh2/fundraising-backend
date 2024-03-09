@@ -9,7 +9,10 @@ const investment = new mongoose.Schema(
         },
         investedAmount: {
             type: Number,
-          },
+        },
+        actualAmount: {
+          type: Number,
+      },
         projectID: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Project",

@@ -85,7 +85,7 @@ const investorsOnProject = async (req, res) => {
             {
                 $group: {
                     _id: "$investorAddress", // Ensure field name is correct, "investorAddress" or "investorAddress"
-                    totalInvestment: { $sum: "$investedAmount" }
+                    totalInvestment: { $sum: "$actualAmount" }
                 }
             }
         ]);
@@ -195,7 +195,7 @@ const investorsReturns = async (req, res) => {
             {
                 $group: {
                     _id: "$investorAddress", // Ensure field name is correct, "investorAddress" or "investorAddress"
-                    totalInvestment: { $sum: "$investedAmount" }
+                    totalInvestment: { $sum: "$actualAmount" }
                 }
             }
         ]);
