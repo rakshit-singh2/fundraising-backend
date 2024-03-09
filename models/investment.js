@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate");
 const Project = require("./project");
-
+mongoose.pluralize(null);
 const investment = new mongoose.Schema(
     {
-        investerAddress: {
+        investorAddress: {
           type: String,
         },
         investedAmount: {
@@ -13,13 +13,7 @@ const investment = new mongoose.Schema(
         projectID: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Project",
-        },
-        publicKeys: {
-          type: String,
-        },
-        privateKey: {
-          type: String,
-        },
+        }
       },
       { timestamps: true }
 );

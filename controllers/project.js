@@ -32,7 +32,7 @@ const { ethers } = require("ethers");
  *               maximumBuy:
  *                 type: number
  *               vesting:
- *                 type: string
+ *                 type: number
  *               recieverAddress:
  *                 type: string
  *     responses:

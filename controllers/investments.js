@@ -22,7 +22,7 @@ const Project = require("../models/project");
  *           schema:
  *             type: object
  *             properties:
- *               investerAddress:
+ *               investorAddress:
  *                 type: string
  *               givenAmount:
  *                 type: number
@@ -88,7 +88,7 @@ const createInvestment = async (req, res) => {
         }
 
         const newInvestment = new Investment({
-            investerAddress: req.body.investerAddress,
+            investorAddress: req.body.investorAddress,
             investedAmount: req.body.givenAmount,
             projectID: req.body.projectID,
             actualAmount: req.body.actualAmount
@@ -120,13 +120,13 @@ const createInvestment = async (req, res) => {
 
 /**
  * @swagger
- * /api/investments/getInvestmentByProject/{ProjectId}:
+ * /api/investments/getInvestmentByProject/{projectId}:
  *   get:
  *     summary: Get investment by project ID
  *     tags: [Investments]
  *     parameters:
  *       - in: path
- *         name: ProjectId
+ *         name: projectId
  *         required: true
  *         schema:
  *           type: string
@@ -172,7 +172,9 @@ const createInvestment = async (req, res) => {
  */
 const getInvestmentByProject = async (req, res) => {
     try {
-        const project = await Project.findById(req.params.ProjectId);
+        // console.log(req.params.projectId)
+        const project = await Project.findById(req.params.projectId);
+        // console.log(project);
         if (!project) {
             return res.status(404).json({
                 statusCode: 404,
@@ -180,7 +182,8 @@ const getInvestmentByProject = async (req, res) => {
             });
         }
 
-        const investment = await Investment.findOne({ projectID: req.params.ProjectId });
+        const investment = await Investment.find({ projectID: req.params.projectId });
+        console.log()
         return res.status(200).json({
             statusCode: 200,
             investment,
@@ -251,7 +254,7 @@ const getInvestmentByProject = async (req, res) => {
 const getInvestmentByAddress = async (req, res) => {
     try {
         const investorAddress = req.params.address;
-        const investment = await Investment.findOne({ investerAddress: investorAddress });
+        const investment = await Investment.find({ investorAddress: investorAddress });
         if (!investment) {
             return res.status(404).json({
                 statusCode: 404,

@@ -1,15 +1,15 @@
+const mongoose = require("mongoose");
 const Investment = require("../models/investment");
-
-
+const Project = require("../models/project");
 /**
  * @swagger
- * /api/returns/investorsClosedProject/{projectId}:
+ * /api/returns/investorsOnProject/{projectID}:
  *   get:
  *     summary: Get total investments by project ID
  *     tags: [Returns]
  *     parameters:
  *       - in: path
- *         name: projectId
+ *         name: projectID
  *         required: true
  *         schema:
  *           type: string
@@ -67,17 +67,25 @@ const Investment = require("../models/investment");
  *                 error:
  *                   type: object
  */
-const investorsClosedProject = async (req, res) => {
+const investorsOnProject = async (req, res) => {
     try {
-        const projectId = req.params.projectId;
+        const projectID = req.params.projectID;
+        // console.log(req.params.projectID)
+        const project = await Project.findById(projectID);
 
-        // Aggregate pipeline to sum up the invested amount for each investor on the specified project
+        if (!project) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "Project not found",
+            });
+        }
+        
         const result = await Investment.aggregate([
-            { $match: { projectID: projectId } }, // Filter by project ID
+            { $match: { projectID: new mongoose.Types.ObjectId(projectID) } }, // Ensure projectID is properly converted to ObjectId
             {
                 $group: {
-                    _id: "$investerAddress", // Group by investor address
-                    totalInvestment: { $sum: "$investedAmount" } // Calculate the total invested amount
+                    _id: "$investorAddress", // Ensure field name is correct, "investorAddress" or "investorAddress"
+                    totalInvestment: { $sum: "$investedAmount" }
                 }
             }
         ]);
@@ -91,8 +99,8 @@ const investorsClosedProject = async (req, res) => {
 
         return res.status(200).json({
             statusCode: 200,
-            projectID: projectId, // The project ID
-            investments: result.map(item => ({ address: item._id, amount: item.totalInvestment })) // List of investments by address
+            projectID: projectID,
+            investments: result.map(item => ({ address: item._id, amount: item.totalInvestment }))
         });
     } catch (error) {
         console.error(error);
@@ -103,16 +111,15 @@ const investorsClosedProject = async (req, res) => {
         });
     }
 };
-
 /**
  * @swagger
- * /api/returns/investorsReturns/{projectId}:
+ * /api/returns/investorsReturns/{projectID}:
  *   get:
  *     summary: Get total investments by project ID
  *     tags: [Returns]
  *     parameters:
  *       - in: path
- *         name: projectId
+ *         name: projectID
  *         required: true
  *         schema:
  *           type: string
@@ -172,31 +179,38 @@ const investorsClosedProject = async (req, res) => {
  */
 const investorsReturns = async (req, res) => {
     try {
-        const projectId = req.params.projectId;
-        console.log("projectId",projectId)
-        // Aggregate pipeline to sum up the invested amount for each investor on the specified project
+        const projectID = req.params.projectID;
+        // console.log(req.params.projectID)
+        const project = await Project.findById(projectID);
+
+        if (!project) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "Project not found",
+            });
+        }
+        
         const result = await Investment.aggregate([
-            { $match: { projectID: projectId } }, // Filter by project ID
+            { $match: { projectID: new mongoose.Types.ObjectId(projectID) } }, // Ensure projectID is properly converted to ObjectId
             {
                 $group: {
-                    _id: "$investerAddress", // Group by investor address
-                    totalInvestment: { $sum: "$investedAmount" } // Calculate the total invested amount
+                    _id: "$investorAddress", // Ensure field name is correct, "investorAddress" or "investorAddress"
+                    totalInvestment: { $sum: "$investedAmount" }
                 }
             }
         ]);
-        console.log("result",result)
+
         if (!result || result.length === 0) {
             return res.status(404).json({
                 statusCode: 404,
                 responseMessage: "No investments found for the specified project",
             });
         }
-
-        const project = await Project.findById(projectId);
+        console.log("project.tokenSupply",project.tokenSupply,"\n project.tokenSupply", project.targetAmount)
         return res.status(200).json({
             statusCode: 200,
-            projectID: projectId, // The project ID
-            investments: result.map(item => ({ address: item._id, amount: (project.tokenSupply * item.totalInvestment)/ project.targetAmount})) // List of investments by address
+            projectID: projectID,
+            investments: result.map(item => ({ address: item._id, amount: ( ( project.tokenSupply / project.targetAmount ) * item.totalInvestment ) }))
         });
     } catch (error) {
         console.error(error);
@@ -208,8 +222,7 @@ const investorsReturns = async (req, res) => {
     }
 };
 
-
 module.exports = {
-    investorsClosedProject,
+    investorsOnProject,
     investorsReturns
 };

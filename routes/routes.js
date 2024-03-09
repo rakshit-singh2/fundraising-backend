@@ -22,15 +22,15 @@ router.post('/projects/withdraw/:projectID', withdraw);
 /************************************************  Investment  ************************************************/
 const { createInvestment, getInvestmentByProject, getInvestmentByAddress, getAllInvestment } = require('../controllers/investments');
 router.post("/investments/createInvestment", createInvestment);
-router.get("/investments/getInvestmentByProject/:ProjectId", getInvestmentByProject);
+router.get("/investments/getInvestmentByProject/:projectId", getInvestmentByProject);
 router.get("/investments/getInvestmentByAddress/:address", getInvestmentByAddress);
 router.get("/investments/getAllInvestment", getAllInvestment);
 
 
 /************************************************  Returns  ************************************************/
-const { investorsClosedProject, investorsReturns } = require('../controllers/returns');
-router.get("/returns/investorsClosedProject/:projectId", investorsClosedProject);
-router.get("/returns/investorsReturns/:projectId", investorsReturns);
+const { investorsOnProject, investorsReturns } = require('../controllers/returns');
+router.get("/returns/investorsOnProject/:projectID", investorsOnProject);
+router.get("/returns/investorsReturns/:projectID", investorsReturns);
 
 
 /************************************************  Router Export  ************************************************/
