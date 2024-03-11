@@ -369,6 +369,12 @@ const getAllInvestment = async (req, res) => {
  *         description: ID of the project
  *         schema:
  *           type: string
+ *       - in: query
+ *         name: askAmount
+ *         required: true
+ *         description: ID of the project
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Stakes sold successfully
@@ -438,6 +444,7 @@ const sellStakes = async (req, res) => {
 
         // Update saleStatus for each investment
         for (const investment of investments) {
+            investment.askAmount = req.query.askAmount;
             investment.saleStatus = true;
             await investment.save();
         }
@@ -489,9 +496,25 @@ const getOnSaleInvestmentByProject = async (req, res) => {
                 responseMessage: "Investment not found",
             });
         }
+        const investorAmountMap = {};
+
+        investments.forEach(investment => {
+        // If the investor already exists in the map, add the invested amount to their total
+        if (investorAmountMap.hasOwnProperty(investment.investorAddress)) {
+            investorAmountMap[investment.investorAddress] += investment.actualAmount;
+        } else { // If the investor doesn't exist in the map, initialize their total amount
+            investorAmountMap[investment.investorAddress] = investment.actualAmount;
+        }
+        });
+
+        // Create an array of JSON objects containing investor address and total amount invested
+        const investorTotalAmountArray = Object.keys(investorAmountMap).map(investorAddress => ({
+        investor: investorAddress,
+        totalAmount: investorAmountMap[investorAddress]
+        }));
         return res.status(200).json({
             statusCode: 200,
-            investments,
+            investments:investorAmountMap
         });
     } catch (error) {
         console.error(error);
@@ -547,6 +570,7 @@ const buyStakes = async (req, res) => {
             });
         }
         for (const investment of investments) {
+            investment.askAmount = 0;
             investment.saleStatus = false;
             investment.investorAddress = req.query.newInvestorAddress;
             await investment.save();

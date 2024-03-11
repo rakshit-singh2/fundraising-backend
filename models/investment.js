@@ -4,14 +4,17 @@ const Project = require("./project");
 mongoose.pluralize(null);
 const investment = new mongoose.Schema(
     {
-        investorAddress: {
-          type: String,
-        },
-        investedAmount: {
-            type: Number,
-        },
-        actualAmount: {
-          type: Number,
+      investorAddress: {
+        type: String,
+      },
+      investedAmount: {
+        type: Number,
+      },
+      actualAmount: {
+        type: Number,
+      },
+      askAmount:{
+        type: Number,
       },
       projectID: {
         type: mongoose.Schema.Types.ObjectId,
