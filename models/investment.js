@@ -13,12 +13,16 @@ const investment = new mongoose.Schema(
         actualAmount: {
           type: Number,
       },
-        projectID: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Project",
-        }
+      projectID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
       },
-      { timestamps: true }
+      saleStatus:{
+        type:Boolean,
+        default:false,
+      }
+    },
+    { timestamps: true }
 );
 investment.plugin(mongoosePaginate);
 module.exports = mongoose.model("Investment", investment);

@@ -120,13 +120,13 @@ const createInvestment = async (req, res) => {
 
 /**
  * @swagger
- * /api/investments/getInvestmentByProject/{projectId}:
+ * /api/investments/getInvestmentByProject/{projectID}:
  *   get:
  *     summary: Get investment by project ID
  *     tags: [Investments]
  *     parameters:
  *       - in: path
- *         name: projectId
+ *         name: projectID
  *         required: true
  *         schema:
  *           type: string
@@ -172,8 +172,8 @@ const createInvestment = async (req, res) => {
  */
 const getInvestmentByProject = async (req, res) => {
     try {
-        // console.log(req.params.projectId)
-        const project = await Project.findById(req.params.projectId);
+        // console.log(req.params.projectID)
+        const project = await Project.findById(req.params.projectID);
         // console.log(project);
         if (!project) {
             return res.status(404).json({
@@ -182,7 +182,7 @@ const getInvestmentByProject = async (req, res) => {
             });
         }
 
-        const investment = await Investment.find({ projectID: req.params.projectId });
+        const investment = await Investment.find({ projectID: req.params.projectID });
         console.log()
         return res.status(200).json({
             statusCode: 200,
@@ -290,6 +290,7 @@ const getInvestmentByAddress = async (req, res) => {
     }
 };
 
+
 /**
  * @swagger
  * /api/investments/getAllInvestment:
@@ -328,6 +329,12 @@ const getInvestmentByAddress = async (req, res) => {
 const getAllInvestment = async (req, res) => {
     try {
         const investments = await Investment.find();
+        if (!investments || investments.length === 0) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "No investments not found",
+            });
+        }
         return res.status(200).json({
             statusCode: 200,
             investments: investments,
@@ -341,9 +348,209 @@ const getAllInvestment = async (req, res) => {
         });
     }
 };
+
+
+/**
+ * @swagger
+ * /api/investments/sellStakes:
+ *   post:
+ *     summary: Sell stakes for an investor in a project
+ *     tags: [Investments]
+ *     parameters:
+ *       - in: query
+ *         name: investorAddress
+ *         required: true
+ *         description: Address of the investor
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: projectID
+ *         required: true
+ *         description: ID of the project
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Stakes sold successfully
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 400
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Both investorAddress and projectID are required
+ *       404:
+ *         description: Investment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 404
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Investment not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: number
+ *                   example: 500
+ *                 responseMessage:
+ *                   type: string
+ *                   example: Internal Server Error
+ *                 error:
+ *                   type: object
+ */
 const sellStakes = async (req, res) => {
     try {
-        const investments = await Investment.find();
+        // console.log("req.query.investorAddress",req.query.investorAddress,"\nreq.query.projectID",req.query.projectID)
+        // Check if both investorAddress and projectID are provided
+        if (!req.query.investorAddress || !req.query.projectID) {
+            return res.status(400).json({
+                statusCode: 400,
+                responseMessage: "Both investorAddress and projectID are required",
+            });
+        }
+        // console.log("req.query.investorAddres",req.query.investorAddress,"\nreq.query.projectID",req.query.projectID)
+        // Find investments matching investorAddress and projectID
+        const investments = await Investment.find({ investorAddress: req.query.investorAddress, projectID: req.query.projectID });
+        
+        // Check if investments were found
+        if (!investments || investments.length === 0) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "Investment not found",
+            });
+        }
+
+        // Update saleStatus for each investment
+        for (const investment of investments) {
+            investment.saleStatus = true;
+            await investment.save();
+        }
+
+        // Respond with success message and updated investments
+        return res.status(200).json({
+            statusCode: 200,
+            investments: investments,
+        });
+    } catch (error) {
+        // Handle internal server error
+        console.error(error);
+        return res.status(500).json({
+            statusCode: 500,
+            responseMessage: "Internal Server Error",
+            error: error,
+        });
+    }
+};
+
+
+/**
+ * @swagger
+ * /api/investments/getOnSaleInvestmentByProject/{projectID}:
+ *   get:
+ *     summary: Get investments on sale by project
+ *     tags: [Investments]
+ *     parameters:
+ *       - in: path
+ *         name: projectID
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Something went wrong
+ */
+const getOnSaleInvestmentByProject = async (req, res) => {
+    try {
+        // console.log("req.params.projectID",req.params.projectID)
+        const investments = await Investment.find({ projectID: req.params.projectID, saleStatus: true });
+        if (!investments || investments.length === 0) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "Investment not found",
+            });
+        }
+        return res.status(200).json({
+            statusCode: 200,
+            investments,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            statusCode: 500,
+            responseMessage: "Something went wrong",
+            error: error,
+        });
+    }
+};
+
+
+/**
+ * @swagger
+ * /api/investments/buyStakes:
+ *   post:
+ *     summary: Buy stakes for an investor in a project
+ *     tags: [Investments]
+ *     parameters:
+ *       - in: query
+ *         name: investorAddress
+ *         required: true
+ *         description: Address of the investor
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: projectID
+ *         required: true
+ *         description: ID of the project
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: newInvestorAddress
+ *         required: true
+ *         description: Address of the new investor
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Stakes bought successfully
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Something went wrong
+ */
+const buyStakes = async (req, res) => {
+    try {
+        const investments = await Investment.find({ investorAddress: req.query.investorAddress, projectID: req.query.projectID, saleStatus: true });
+        if (!investments || investments.length === 0) {
+            return res.status(404).json({
+                statusCode: 404,
+                responseMessage: "Investment not found",
+            });
+        }
+        for (const investment of investments) {
+            investment.saleStatus = false;
+            investment.investorAddress = req.query.newInvestorAddress;
+            await investment.save();
+        }
         return res.status(200).json({
             statusCode: 200,
             investments: investments,
@@ -357,10 +564,13 @@ const sellStakes = async (req, res) => {
         });
     }
 };
-const buyStakes =
+
 module.exports = {
     createInvestment,
     getInvestmentByProject,
     getInvestmentByAddress,
-    getAllInvestment
+    getAllInvestment,
+    buyStakes,
+    getOnSaleInvestmentByProject,
+    sellStakes
 };
