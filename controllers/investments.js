@@ -268,6 +268,7 @@ const getInvestmentByAddress = async (req, res) => {
                 _id: investment._id,
                 investorAddress: investment.investorAddress,
                 investedAmount: investment.investedAmount,
+                actualAmount: investment.actualAmount,
                 projectID: investment.projectID,
                 createdAt: investment.createdAt,
                 updatedAt: investment.updatedAt,
@@ -340,7 +341,23 @@ const getAllInvestment = async (req, res) => {
         });
     }
 };
-
+const sellStakes = async (req, res) => {
+    try {
+        const investments = await Investment.find();
+        return res.status(200).json({
+            statusCode: 200,
+            investments: investments,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            statusCode: 500,
+            responseMessage: "Something went wrong",
+            error: error,
+        });
+    }
+};
+const buyStakes =
 module.exports = {
     createInvestment,
     getInvestmentByProject,
