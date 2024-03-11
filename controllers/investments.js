@@ -254,16 +254,30 @@ const getInvestmentByProject = async (req, res) => {
 const getInvestmentByAddress = async (req, res) => {
     try {
         const investorAddress = req.params.address;
-        const investment = await Investment.find({ investorAddress: investorAddress });
-        if (!investment) {
+        const investments = await Investment.find({ investorAddress: investorAddress });
+        if (!investments || investments.length === 0) {
             return res.status(404).json({
                 statusCode: 404,
                 responseMessage: "Investment not found",
             });
         }
+
+        const investmentDetails = await Promise.all(investments.map(async (investment) => {
+            const project = await Project.findById(investment.projectID);
+            return {
+                _id: investment._id,
+                investorAddress: investment.investorAddress,
+                investedAmount: investment.investedAmount,
+                projectID: investment.projectID,
+                createdAt: investment.createdAt,
+                updatedAt: investment.updatedAt,
+                project: project ? project.name : "Project not found",
+            };
+        }));
+
         return res.status(200).json({
             statusCode: 200,
-            investment: investment,
+            investment: investmentDetails,
         });
     } catch (error) {
         console.error(error);
@@ -274,7 +288,6 @@ const getInvestmentByAddress = async (req, res) => {
         });
     }
 };
-
 
 /**
  * @swagger
