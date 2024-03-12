@@ -20,7 +20,8 @@ app.use(
 
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/projectsDB')
+// mongoose.connect('mongodb://localhost:27017/projectsDB')
+mongoose.connect('mongodb+srv://thisisjames007:MxG556UjM2nIR50v@cluster0.gs0bxym.mongodb.net/projectsDB')
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
